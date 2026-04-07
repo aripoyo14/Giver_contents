@@ -1,0 +1,10 @@
+# すべて無視
+*
+
+
+# .gitignore 自体は追跡
+!.gitignore
+
+# コンテンツ（LINE配信ドラフト）だけ追跡
+!drafts/
+!drafts/**
