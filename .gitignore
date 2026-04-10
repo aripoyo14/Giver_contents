@@ -8,6 +8,10 @@
 !drafts/
 !drafts/**
 
+# Claude Code コマンド定義
+!.claude/
+!.claude/**
+
 # ドキュメント
 !docs/
 !docs/**
