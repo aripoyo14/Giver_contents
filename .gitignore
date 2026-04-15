@@ -19,3 +19,7 @@
 # インフォグラフィック
 !infographics/
 !infographics/**
+
+# 体験談メモ
+!tried/
+!tried/**
