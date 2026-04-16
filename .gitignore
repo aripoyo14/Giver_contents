@@ -1,21 +1,40 @@
-# すべて無視
-*
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.coverage
+.pytest_cache/
 
-# .gitignore 自体は追跡
-!.gitignore
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
 
-# コンテンツ（LINE配信ドラフト）だけ追跡
-!drafts/
-!drafts/**
+# ===== IDE =====
+.cursor/
+.idea/
+.vscode/
 
-# Claude Code コマンド定義
-!.claude/
-!.claude/**
+# ===== Claude Code (個人設定) =====
+# settings.local.json は個人の権限設定・絶対パスを含むため除外
+.claude/settings.local.json
 
-# ドキュメント
-!docs/
-!docs/**
+# ===== git =====
+.worktrees/
 
-# インフォグラフィック
-!infographics/
-!infographics/**
+# ===== 個人運用データ =====
+# 会議メモ（個人情報を含む可能性）
+mtg_note/
+
+# クローラーの実行ログ・一時ファイル
+logs/
+collector/transcript/
+
+# ===== 生成画像（容量が大きくなりがちなもの） =====
+tried/**/*.png
+tried/**/*.jpg
+tried/**/*.jpeg
+tried/**/*.gif
+tried/**/*.webp
+tried/**/.DS_Store

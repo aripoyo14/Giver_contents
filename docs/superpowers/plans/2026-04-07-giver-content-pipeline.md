@@ -128,30 +128,24 @@ git commit -m "chore: プロジェクト初期セットアップ"
 `tests/test_sources.py` を作成:
 
 ```python
-from collector.sources import TIER_1_SOURCES, TIER_2_SOURCES, ALL_SOURCES
+from collector.sources import SOURCES, ALL_SOURCES
 
 
-def test_tier1_sources_have_required_fields():
-    for source in TIER_1_SOURCES:
+def test_sources_have_required_fields():
+    for source in SOURCES:
         assert 'name' in source
         assert 'url' in source
         assert source['tier'] == 1
         assert 0 < source['weight'] <= 1.0
 
 
-def test_tier2_sources_have_required_fields():
-    for source in TIER_2_SOURCES:
-        assert source['tier'] == 2
-
-
-def test_all_sources_contains_both_tiers():
+def test_all_sources_are_tier1():
     tiers = {s['tier'] for s in ALL_SOURCES}
-    assert 1 in tiers
-    assert 2 in tiers
+    assert tiers == {1}
 
 
-def test_tier1_has_at_least_three_sources():
-    assert len(TIER_1_SOURCES) >= 3
+def test_has_at_least_three_sources():
+    assert len(SOURCES) >= 3
 ```
 
 - [ ] **Step 2: テストが失敗することを確認する**
@@ -166,62 +160,55 @@ Expected: `ModuleNotFoundError: No module named 'collector.sources'`
 
 ```python
 # collector/sources.py
+# Tier 1: 公式一次情報・編集部ありの信頼性の高いメディアのみ
+# ユーザー生成コンテンツはプロンプトインジェクションリスクのため除外
 
-TIER_1_SOURCES = [
-    {
-        "name": "TechCrunch AI",
-        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
-        "tier": 1,
-        "weight": 0.8,
-    },
-    {
-        "name": "MIT Technology Review",
-        "url": "https://www.technologyreview.com/feed/",
-        "tier": 1,
-        "weight": 0.9,
-    },
-    {
-        "name": "The Verge AI",
-        "url": "https://www.theverge.com/ai-artificial-intelligence/rss/index.xml",
-        "tier": 1,
-        "weight": 0.8,
-    },
+SOURCES = [
     {
         "name": "OpenAI Blog",
         "url": "https://openai.com/news/rss.xml",
         "tier": 1,
         "weight": 1.0,
-    },
-    {
-        "name": "Anthropic Blog",
-        "url": "https://www.anthropic.com/news.rss",
-        "tier": 1,
-        "weight": 1.0,
+        "language": "en",
     },
     {
         "name": "Google DeepMind Blog",
         "url": "https://deepmind.google/blog/rss.xml",
         "tier": 1,
         "weight": 0.9,
+        "language": "en",
+    },
+    {
+        "name": "MIT Technology Review",
+        "url": "https://www.technologyreview.com/feed/",
+        "tier": 1,
+        "weight": 0.9,
+        "language": "en",
+    },
+    {
+        "name": "TechCrunch AI",
+        "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "tier": 1,
+        "weight": 0.8,
+        "language": "en",
+    },
+    {
+        "name": "The Verge AI",
+        "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+        "tier": 1,
+        "weight": 0.8,
+        "language": "en",
+    },
+    {
+        "name": "ITmedia AI+",
+        "url": "https://rss.itmedia.co.jp/rss/2.0/aiplus.xml",
+        "tier": 1,
+        "weight": 0.8,
+        "language": "ja",
     },
 ]
 
-TIER_2_SOURCES = [
-    {
-        "name": "Qiita AI タグ",
-        "url": "https://qiita.com/tags/ai/feed",
-        "tier": 2,
-        "weight": 0.4,
-    },
-    {
-        "name": "Zenn トレンド",
-        "url": "https://zenn.dev/feed",
-        "tier": 2,
-        "weight": 0.4,
-    },
-]
-
-ALL_SOURCES = TIER_1_SOURCES + TIER_2_SOURCES
+ALL_SOURCES = SOURCES
 ```
 
 > ⚠️ RSS URLはサービス側の変更で無効になる場合がある。Task 9の統合テストで実際にアクセスして確認すること。
@@ -973,10 +960,10 @@ git commit -m "chore: Cron セットアップスクリプトを追加"
 ```bash
 source .venv/bin/activate
 python3 -c "
-from collector.sources import TIER_1_SOURCES
+from collector.sources import SOURCES
 from collector.fetcher import fetch_feed
 
-for src in TIER_1_SOURCES:
+for src in SOURCES:
     articles = fetch_feed(src['url'])
     status = '✅' if articles else '❌'
     print(f'{status} {src[\"name\"]}: {len(articles)}件')
